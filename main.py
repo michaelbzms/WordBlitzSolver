@@ -1,5 +1,7 @@
+import time
 from copy import copy
 
+import pyautogui
 import unicodedata as ud
 import pygtrie
 
@@ -18,7 +20,7 @@ def read_dict(file: str):
 def read_grid(file: str):
     with open(file, 'r', encoding='utf-8') as f:
         grid = f.read().split('\n')
-        grid = [row.split(', ') for row in grid]
+        grid = [row.split(' ') for row in grid]
     return grid
 
 
@@ -72,7 +74,36 @@ def draw_solutions(solutions, limit):
         print('')
 
 
+def create_positions() -> dict:
+    start_x = 132
+    start_y = 527
+    distance = 106
+    positions = {}
+    for i in range(4):
+        for j in range(4):
+            positions[(i, j)] = (start_x + j * distance, start_y + i * distance)
+    print(positions)
+    return positions
+
+
+def play_solutions(solutions, limit: int):
+    # Position of buttons
+    positions = create_positions()
+    # play the solutions
+    for length, word, path in solutions[:limit]:
+        print(positions[path[0]])
+        pyautogui.moveTo(positions[path[0]], duration=0.01)
+        pyautogui.mouseDown()
+        for p in path[1:]:
+            pyautogui.moveTo(positions[p], duration=0.01)
+        pyautogui.mouseUp()
+        time.sleep(0.1)
+
+
 if __name__ == '__main__':
+    # how many word to limit ourselves to
+    limit = 100
+
     # read dict of words
     words = read_dict('Greek.dic')
 
@@ -99,4 +130,4 @@ if __name__ == '__main__':
             final_solutions.append(sorted_solutions[i])
 
     # draw solutions
-    draw_solutions(final_solutions, limit=30)
+    play_solutions(final_solutions, limit=limit)
