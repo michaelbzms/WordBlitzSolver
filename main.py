@@ -92,12 +92,12 @@ def play_solutions(solutions, limit: int):
     # play the solutions
     for length, word, path in solutions[:limit]:
         print(positions[path[0]])
-        pyautogui.moveTo(positions[path[0]], duration=0.01)
+        pyautogui.moveTo(positions[path[0]], duration=0.0001)
         pyautogui.mouseDown()
         for p in path[1:]:
-            pyautogui.moveTo(positions[p], duration=0.01)
+            pyautogui.moveTo(positions[p], duration=0.0001)
         pyautogui.mouseUp()
-        time.sleep(0.1)
+        time.sleep(0.01)
 
 
 if __name__ == '__main__':
@@ -125,9 +125,11 @@ if __name__ == '__main__':
 
     # remove duplicates
     final_solutions = [sorted_solutions[0]]
+    seen = set(sorted_solutions[0][1])
     for i in range(1, len(sorted_solutions)):
-        if sorted_solutions[i-1][1] != sorted_solutions[i][1]:
+        if sorted_solutions[i][1] not in seen:
             final_solutions.append(sorted_solutions[i])
+        seen.add(sorted_solutions[i][1])
 
     # draw solutions
     play_solutions(final_solutions, limit=limit)
